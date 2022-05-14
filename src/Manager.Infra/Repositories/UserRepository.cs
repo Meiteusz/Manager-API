@@ -1,30 +1,34 @@
 ﻿using Manager.Domain.Entities;
 using Manager.Infra.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace Manager.Infra.Repositories
 {
     public class UserRepository : BaseRepository<User>, IUserRepository
     {
-        private readonly ManagerApiContext _context;
+        private readonly IManagerApiContext _context;
 
-        public UserRepository(ManagerApiContext context) : base(context)
+        public UserRepository(IManagerApiContext context) : base(context)
         {
             this._context = context;
         }
 
-        public Task<User> GetByEmail(string email)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<User?> GetByEmail(string userEmail)
+            => await _context.Users
+                             .Where(x => x.Email.ToLower() == userEmail.ToLower())
+                             .AsNoTracking()
+                             .FirstOrDefaultAsync();
 
-        public Task<List<User>> SearchByEmail()
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<List<User>> SearchByEmail(string userEmail)
+            => await _context.Users
+                             .Where(x => x.Email.ToLower().Contains(userEmail.ToLower()))
+                             .AsNoTracking()
+                             .ToListAsync();
 
-        public Task<List<User>> SearchByName(string name)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<List<User>> SearchByName(string userName)
+            => await _context.Users
+                             .Where(x => x.Name.ToLower().Contains(userName.ToLower()))
+                             .AsNoTracking()
+                             .ToListAsync();
     }
 }

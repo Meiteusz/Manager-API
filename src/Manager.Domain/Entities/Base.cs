@@ -1,7 +1,11 @@
-﻿namespace Manager.Domain.Entities
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Manager.Domain.Entities
 {
     public abstract class Base
     {
+        [Key]
+        [DataType("BIGINT")]
         public long Id { get; set; }
 
 
