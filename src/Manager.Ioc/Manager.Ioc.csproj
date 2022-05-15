@@ -6,4 +6,16 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="11.0.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
+    <PackageReference Include="Ninject" Version="3.3.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Manager.API\Manager.API.csproj" />
+    <ProjectReference Include="..\Manager.Infra\Manager.Infra.csproj" />
+    <ProjectReference Include="..\Manager.Services\Manager.Services.csproj" />
+  </ItemGroup>
+
 </Project>
