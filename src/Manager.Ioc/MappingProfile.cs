@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using Manager.API.ViewModels;
 using Manager.Domain.Entities;
 using Manager.Services.DTO_s;
+using Manager.Services.DTO_s.ViewModels;
 
 namespace Manager.Ioc
 {
@@ -17,6 +17,7 @@ namespace Manager.Ioc
         {
             CreateMap<UserDto, User>();
             CreateMap<CreateUserViewModel, UserDto>();
+            CreateMap<UpdateUserViewModel, UserDto>();
         }
         private void ReverseMappingEntities()
         {

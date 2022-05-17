@@ -6,6 +6,6 @@
             => id > 0;
 
         public static bool IsInvalidID(this long id)
-            => id > 0;
+            => id < 0;
     }
 }

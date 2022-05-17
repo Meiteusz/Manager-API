@@ -39,7 +39,7 @@ namespace Manager.Domain.Validators
                 .MaximumLength(180)
                 .WithMessage("O email deve ter no máximo 180 caracteres")
 
-                .Matches(@"/^[a-z0-9.]+@[a-z0-9]+\.[a-z]+\.([a-z]+)?$/i")
+                .Matches(@"^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$")
                 .WithMessage("O email informado não é válido.");
 
 
