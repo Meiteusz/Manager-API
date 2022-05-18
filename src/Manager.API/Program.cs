@@ -1,4 +1,5 @@
 
+using EscNet.IoC.Cryptography;
 using Manager.Ioc;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -14,7 +15,8 @@ builder.Services.AddControllers();
 #region Inject And Mapper
 
 builder.Services.AddSingleton(x => builder.Configuration);
-builder.Services.InjectIoCServices();
+builder.Services.AddRijndaelCryptography(builder.Configuration["CryptographyKey"]);
+Injector.InjectBusinessIocServices(builder.Services);
 
 #endregion
 
@@ -41,9 +43,6 @@ builder.Services.AddAuthentication(x =>
     });
 
 #endregion
-
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
 
 #region swagger
 
@@ -86,6 +85,10 @@ builder.Services.AddSwaggerGen(x =>
 });
 
 #endregion
+
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
+
 
 var app = builder.Build();
 

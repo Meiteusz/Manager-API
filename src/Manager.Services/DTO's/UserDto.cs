@@ -1,4 +1,6 @@
-﻿namespace Manager.Services.DTO_s
+﻿using System.Text.Json.Serialization;
+
+namespace Manager.Services.DTO_s
 {
     public class UserDto
     {
@@ -7,6 +9,7 @@
 
         public string Email { get; set; }
 
+        [JsonIgnore]
         public string Password { get; set; }
 
         public UserDto() { }

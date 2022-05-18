@@ -31,23 +31,8 @@ namespace Manager.Domain.Entities
         //EF
         protected User() { }
 
-        public void ChangeName(string name)
-        {
-            Name = name;
-            Validate();
-        }
-
-        public void ChangeEmail(string email)
-        {
-            Email = email;
-            Validate();
-        }
-
-        public void ChangePassword(string password)
-        {
-            Password = password;
-            Validate();
-        }
+        public void UpdatePassword(string newPassword)
+            => Password = newPassword;
 
         public override bool Validate()
         {
