@@ -1,6 +1,6 @@
 <h4>Exec on package manager console:</h4><br>
 
-*Update-Database -Project Models -Context CrudAPIContext*<br><br>
+*Update-Database -Project Manager.Infra -Context ManagerApiContext*<br><br>
 
 Configure your keys on User Secrets:<br>
 
