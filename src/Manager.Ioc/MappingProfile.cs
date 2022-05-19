@@ -16,9 +16,14 @@ namespace Manager.Ioc
         private void MappingEntities()
         {
             CreateMap<UserDto, User>();
+        }
+
+        private void MappingViewModels()
+        {
             CreateMap<CreateUserViewModel, UserDto>();
             CreateMap<UpdateUserViewModel, UserDto>();
         }
+
         private void ReverseMappingEntities()
         {
             CreateMap<User, UserDto>().ReverseMap();
