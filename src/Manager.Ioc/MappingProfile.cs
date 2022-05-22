@@ -10,6 +10,7 @@ namespace Manager.Ioc
         public MappingProfile()
         {
             MappingEntities();
+            MappingViewModels();
             ReverseMappingEntities();
         }
 

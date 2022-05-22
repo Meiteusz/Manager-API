@@ -20,7 +20,7 @@ namespace Manager.Domain.Validators
                 .WithMessage("O nome não pode ser nulo")
 
                 .NotEmpty()
-                .WithMessage("O nome não pode ser vazia")
+                .WithMessage("O nome não pode ser vazio")
 
                 .MinimumLength(3)
                 .WithMessage("O nome deve ter no mínimo 3 caracteres.")

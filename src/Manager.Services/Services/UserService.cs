@@ -79,10 +79,15 @@ namespace Manager.Services.Services
 
         public async Task<UserDto> Update(UserDto userDto)
         {
-            var userExists = _userRepository.Get(userDto.Id) != null;
+            var userExists = await _userRepository.Get(userDto.Id) != null;
 
             if (!userExists)
                 DomainException.ThrowDomainExceptionInvalidId(userDto.Id);
+
+            var userExistsByEmail = await _userRepository.GetByEmail(userDto.Email) != null;
+
+            if (userExistsByEmail)
+                throw new DomainException("Já existe um usuário cadastrado com este email");
 
             var user = _mapper.Map<User>(userDto);
             user.Validate();

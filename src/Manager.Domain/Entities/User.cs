@@ -24,8 +24,6 @@ namespace Manager.Domain.Entities
             this.Email = email;
             this.Password = password;
             _errors = new List<string>();
-
-            Validate();
         }
 
         //EF
@@ -34,7 +32,7 @@ namespace Manager.Domain.Entities
         public void UpdatePassword(string newPassword)
             => Password = newPassword;
 
-        public override bool Validate()
+        public override void Validate()
         {
             var validator = new UserValidator();
             var validation = validator.Validate(this);
@@ -44,10 +42,8 @@ namespace Manager.Domain.Entities
                 foreach (var error in validation.Errors)
                     _errors.Add(error.ErrorMessage);
 
-                throw new DomainException("Alguns campos estão inválidos, por favor corrija-os! ", _errors);
+                throw new DomainException("Alguns campos estão inválidos, por favor corrija-os!", _errors);
             }
-
-            return true;
         }
     }
 }
