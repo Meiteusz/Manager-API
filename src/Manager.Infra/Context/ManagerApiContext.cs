@@ -19,6 +19,6 @@ namespace Manager.Infra
         public void SetDbSetUsers(DbSet<User> users) => Users = users;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-            => optionsBuilder.UseSqlServer(_configuration["ConnectionStrings:ManagerAPIDefaultConnection"]);
+            => optionsBuilder.UseSqlServer(_configuration["ConnectionStrings:ManagerAPIAzureConnection"]);
     }
 }

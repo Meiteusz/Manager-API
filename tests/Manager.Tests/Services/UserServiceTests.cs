@@ -69,6 +69,7 @@ namespace Manager.Tests
             result.Should().BeEquivalentTo(userOutputDtoFake);
         }
 
+
         [Fact(DisplayName = "Create: Existing user email")]
         public async Task Create_WhenUserEmailAlreadyExists_ThrowDomainException()
         {
@@ -87,6 +88,7 @@ namespace Manager.Tests
             var exception = await Assert.ThrowsAsync<DomainException>(act);
             Assert.Equal("Já existe um usuário cadastrado com este email", exception.Message);
         }
+
 
         [Fact(DisplayName = "Create: Invalid user")]
         public async Task Create_WhenUserIsInvalid_ThrowDomainException()
@@ -110,6 +112,7 @@ namespace Manager.Tests
             Assert.Contains("O email informado não é válido.", exception.Errors);
             Assert.Contains("A senha deve ter no mínimo 8 caracteres", exception.Errors);
         }
+
 
         [Fact(DisplayName = "Get: Passing valid Id")]
         public async Task Get_WhenIdIsValid_ReturnsUserDto()
@@ -135,6 +138,7 @@ namespace Manager.Tests
             Assert.NotNull(result);
         }
 
+
         [Fact(DisplayName = "Get: Passing invalid Id")]
         public async Task Get_WhenIdIsInvalid_ReturnsDomainException()
         {
@@ -150,6 +154,7 @@ namespace Manager.Tests
             var exception = await Assert.ThrowsAsync<DomainException>(act);
             Assert.Contains("Não existe nenhum usuário com o Id informado! Id Informado", exception.Message);
         }
+
 
         [Fact(DisplayName = "Get: User not exists")]
         public async Task Get_WhenUserNotExists_ReturnsNull()
@@ -168,6 +173,7 @@ namespace Manager.Tests
             Assert.Null(result);
         }
 
+
         [Fact(DisplayName = "GetAll: User list with values")]
         public async Task GetAll_WhenUserListContainsValues_ReturnsUsersCountGreaterThanZero()
         {
@@ -184,6 +190,7 @@ namespace Manager.Tests
             // Assert
             Assert.True(result.Count > 0);
         }
+
 
         [Fact(DisplayName = "GetAll: User list without values")]
         public async Task GetAll_WhenUserListNotContainsValues_ReturnsUsersCountEqualZero()
@@ -208,13 +215,15 @@ namespace Manager.Tests
         {
             // Arrage
             var userEmailFake = "fooRonaldo@gmail.com";
-            var userFake = _mapperMock.Map<User>(new UserDto()
+            var userDtoFake = new UserDto()
             {
                 Id = 2,
                 Name = "fooRicardo",
                 Email = "fooRicardo@gmail.com",
                 Password = "2345678910"
-            });
+            };
+
+            var userFake = _mapperMock.Map<User>(userDtoFake);
 
             _userRepositoryMock.Setup(x => x.GetByEmail(It.IsAny<string>())).ReturnsAsync(userFake);
 
@@ -224,8 +233,9 @@ namespace Manager.Tests
 
 
             // Assert
-            result.Should().BeEquivalentTo(userFake);
+            result.Should().BeEquivalentTo(userDtoFake);
         }
+
 
         [Fact(DisplayName = "GetByEmail: Not existing email")]
         public async Task GetByEmail_WhenEmailNotExists_ReturnsNull()
@@ -243,6 +253,7 @@ namespace Manager.Tests
             // Assert
             Assert.Null(result);
         }
+
 
         [Fact(DisplayName = "SearchByEmail: Existing users with email")]
         public async Task SearchByEmail_WhenExistingUsersWithEmail_ReturnsUsersCountGreaterThanZero()
@@ -263,6 +274,7 @@ namespace Manager.Tests
             Assert.True(result.Count > 0);
         }
 
+
         [Fact(DisplayName = "SearchByEmail: Not existing users with email passed")]
         public async Task SearchByEmail_WhenNotExistingUsersWithEmail_ReturnsUsersCountEqualZero()
         {
@@ -281,6 +293,7 @@ namespace Manager.Tests
             // Assert
             Assert.True(result.Count == 0);
         }
+
 
         [Fact(DisplayName = "SearchByName: Existing users with name")]
         public async Task SearchByName_WhenExistingUsersWithName_ReturnsUsersCountGreaterThanZero()
@@ -301,6 +314,7 @@ namespace Manager.Tests
             Assert.True(result.Count > 0);
         }
 
+
         [Fact(DisplayName = "SearchByName: Not existing users with name")]
         public async Task SearchByName_WhenNotExistingUsersWithName_ReturnsUsersCountEqualZero()
         {
@@ -319,6 +333,7 @@ namespace Manager.Tests
             // Assert
             Assert.True(result.Count == 0);
         }
+
 
         [Fact(DisplayName = "Update: Valid user")]
         public async Task Update_WhenUserIsValid_ReturnsUserDto()
@@ -347,7 +362,7 @@ namespace Manager.Tests
             var userFakePasswordEncrypted = "n23hçldfrgd9gd12ç31";
 
             _userRepositoryMock.Setup(x => x.Get(It.IsAny<long>())).ReturnsAsync(userFake);
-            _userRepositoryMock.Setup(x => x.GetByEmail(It.IsAny<string>())).ReturnsAsync(userFake);
+            _userRepositoryMock.Setup(x => x.GetByEmail(It.IsAny<string>())).ReturnsAsync(value: null);
             _rijndaelCryptographyMock.Setup(x => x.Encrypt(It.IsAny<string>())).Returns(userFakePasswordEncrypted);
             _userRepositoryMock.Setup(x => x.Update(It.IsAny<User>())).ReturnsAsync(userUpdatedFake);
 
@@ -359,6 +374,7 @@ namespace Manager.Tests
             // Assert
             result.Should().BeEquivalentTo(userDtoUpdatedFake);
         }
+
 
         [Fact(DisplayName = "Update: Invalid Id")]
         public async Task Update_WhenUserIdIsInvalid_ReturnsDomainException()
@@ -384,6 +400,7 @@ namespace Manager.Tests
             Assert.Contains("Não existe nenhum usuário com o Id informado! Id Informado", exception.Message);
         }
 
+
         [Fact(DisplayName = "Update: Existing user email")]
         public async Task Update_WhenUserEmailAlreadyExists_ThrowDomainException()
         {
@@ -403,6 +420,7 @@ namespace Manager.Tests
             var exception = await Assert.ThrowsAsync<DomainException>(act);
             Assert.Equal("Já existe um usuário cadastrado com este email", exception.Message);
         }
+
 
         [Fact(DisplayName = "Update: Invalid user")]
         public async Task Update_WhenUserIsInvalid_ThrowDomainException()
@@ -425,6 +443,7 @@ namespace Manager.Tests
             Assert.Contains("O nome não pode ser vazio", exception.Errors);
             Assert.Contains("O nome deve ter no mínimo 3 caracteres.", exception.Errors);
         }
+
 
         [Fact(DisplayName = "Remove: Invalid Id")]
         public async Task Remove_WhenUserIdIsInvalid_ThrowDomainException()

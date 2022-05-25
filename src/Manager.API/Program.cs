@@ -93,12 +93,24 @@ builder.Services.AddEndpointsApiExplorer();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
 
+builder.Host.ConfigureAppConfiguration((app, builder) =>
+{
+    if (app.HostingEnvironment.IsProduction())
+    {
+        var buildConfig = builder.Build();
+
+        builder.AddAzureKeyVault
+        (
+            buildConfig["AzureKeyVault:Vault"],    
+            buildConfig["AzureKeyVault:ClientId"],    
+            buildConfig["AzureKeyVault:ClientSecret"]
+        );
+    }
+});
+
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 

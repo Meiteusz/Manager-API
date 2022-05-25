@@ -30,7 +30,6 @@
   <ItemGroup>
     <Folder Include="API\" />
     <Folder Include="Domain\" />
-    <Folder Include="Infra\" />
   </ItemGroup>
 
 </Project>
