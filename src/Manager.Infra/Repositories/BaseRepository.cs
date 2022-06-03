@@ -17,7 +17,6 @@ namespace Manager.Infra.Repositories
         {
             await _context.AddAsync(obj);
             await _context.SaveChangesAsync();
-
             return obj;
         }
 
@@ -28,7 +27,7 @@ namespace Manager.Infra.Repositories
             if (obj != null)
             {
                 _context.Remove(obj);
-                 await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
             }
         }
 

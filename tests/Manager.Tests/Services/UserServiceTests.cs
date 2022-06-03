@@ -1,5 +1,6 @@
 using AutoMapper;
 using EscNet.Cryptography.Interfaces;
+using EscNet.Hashers.Interfaces.Algorithms;
 using FluentAssertions;
 using Manager.Core.Exceptions;
 using Manager.Domain.Entities;
@@ -23,15 +24,15 @@ namespace Manager.Tests
         private readonly IMapper _mapperMock;
 
         private readonly Mock<IUserRepository> _userRepositoryMock;
-        private readonly Mock<IRijndaelCryptography> _rijndaelCryptographyMock;
+        private readonly Mock<IArgon2IdHasher> _hasher;
 
         public UserServiceTests()
         {
             this._userRepositoryMock = new Mock<IUserRepository>();
             this._mapperMock = AutoMapperConfiguration.GetConfiguration();
-            this._rijndaelCryptographyMock = new Mock<IRijndaelCryptography>();
+            this._hasher = new Mock<IArgon2IdHasher>();
 
-            _sut = new UserService(_userRepositoryMock.Object, _mapperMock, _rijndaelCryptographyMock.Object);
+            _sut = new UserService(_userRepositoryMock.Object, _mapperMock, _hasher.Object);
         }
 
         public IEnumerable<User> GetFakeUserList()
@@ -54,10 +55,10 @@ namespace Manager.Tests
             var userOutputDtoFake = new UserDto() { Id = 4, Name = "fooRosa", Email = "fooRosa@gmail.com", Password = "123321123321" };
             var userOutputFake = _mapperMock.Map<User>(userOutputDtoFake);
 
-            var userFakePasswordEncrypted = "n23hçldfrgd9gd12ç31";
+            var userFakePasswordHashed = "n23hçldfrgd9gd12ç31";
 
             _userRepositoryMock.Setup(x => x.GetByEmail(It.IsAny<string>())).ReturnsAsync(value: null);
-            _rijndaelCryptographyMock.Setup(x => x.Encrypt(It.IsAny<string>())).Returns(userFakePasswordEncrypted);
+            _hasher.Setup(x => x.Hash(It.IsAny<string>())).Returns(userFakePasswordHashed);
             _userRepositoryMock.Setup(x => x.Create(It.IsAny<User>())).ReturnsAsync(userOutputFake);
 
 
@@ -91,7 +92,7 @@ namespace Manager.Tests
 
 
         [Fact(DisplayName = "Create: Invalid user")]
-        public async Task Create_WhenUserIsInvalid_ThrowDomainException()
+        public async Task Create_WhenUserIsInvalid_ThrowDomainException() // Refactory
         {
             // Arrage
             var userDtoFake = new UserDto() { Name = "", Email = "32dasds1213.com@gmail", Password = "123" };
@@ -359,11 +360,11 @@ namespace Manager.Tests
 
             var userUpdatedFake = _mapperMock.Map<User>(userDtoUpdatedFake);
 
-            var userFakePasswordEncrypted = "n23hçldfrgd9gd12ç31";
+            var userFakePasswordHash = "n23hçldfrgd9gd12ç31";
 
             _userRepositoryMock.Setup(x => x.Get(It.IsAny<long>())).ReturnsAsync(userFake);
             _userRepositoryMock.Setup(x => x.GetByEmail(It.IsAny<string>())).ReturnsAsync(value: null);
-            _rijndaelCryptographyMock.Setup(x => x.Encrypt(It.IsAny<string>())).Returns(userFakePasswordEncrypted);
+            _hasher.Setup(x => x.Hash(It.IsAny<string>())).Returns(userFakePasswordHash);
             _userRepositoryMock.Setup(x => x.Update(It.IsAny<User>())).ReturnsAsync(userUpdatedFake);
 
 
@@ -423,7 +424,7 @@ namespace Manager.Tests
 
 
         [Fact(DisplayName = "Update: Invalid user")]
-        public async Task Update_WhenUserIsInvalid_ThrowDomainException()
+        public async Task Update_WhenUserIsInvalid_ThrowDomainException() // Refactory
         {
             // Arrage
             var userDtoFake = new UserDto() { Id = 4, Name = "", Email = "abcdefg@gmail.com", Password = "123456789" };

@@ -1,5 +1,7 @@
 
 using EscNet.IoC.Cryptography;
+using EscNet.IoC.Hashers;
+using Isopoh.Cryptography.Argon2;
 using Manager.Ioc;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -15,7 +17,6 @@ builder.Services.AddControllers();
 #region Inject And Mapper
 
 builder.Services.AddSingleton(x => builder.Configuration);
-builder.Services.AddRijndaelCryptography(builder.Configuration["CryptographyKey"]);
 Injector.InjectBusinessIocServices(builder.Services);
 
 #endregion
@@ -86,6 +87,25 @@ builder.Services.AddSwaggerGen(x =>
 
 #endregion
 
+#region Hash
+
+var config = new Argon2Config
+{
+    Type = Argon2Type.DataIndependentAddressing,
+    Version = Argon2Version.Nineteen,
+    Threads = Environment.ProcessorCount,
+    TimeCost = int.Parse(builder.Configuration["Hash:TimeCost"]),
+    MemoryCost = int.Parse(builder.Configuration["Hash:MemoryCost"]),
+    Lanes = int.Parse(builder.Configuration["Hash:Lanes"]),
+    HashLength = int.Parse(builder.Configuration["Hash:HashLength"]),
+    Salt = Encoding.UTF8.GetBytes(builder.Configuration["Hash:Salt"])
+};
+
+builder.Services.AddArgon2IdHasher(config);
+
+#endregion
+
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
@@ -96,8 +116,8 @@ var app = builder.Build();
 
 builder.Host.ConfigureAppConfiguration((app, builder) =>
 {
-    if (app.HostingEnvironment.IsProduction())
-    {
+    //if (app.HostingEnvironment.IsProduction())
+    //{
         var buildConfig = builder.Build();
 
         builder.AddAzureKeyVault
@@ -106,7 +126,7 @@ builder.Host.ConfigureAppConfiguration((app, builder) =>
             buildConfig["AzureKeyVault:ClientId"],    
             buildConfig["AzureKeyVault:ClientSecret"]
         );
-    }
+    //}
 });
 
 app.UseSwagger();

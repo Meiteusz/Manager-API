@@ -5,7 +5,7 @@ using Manager.Domain.Entities;
 using Manager.Infra.Interfaces;
 using Manager.Services.DTO_s;
 using Manager.Services.Services.Interfaces;
-using EscNet.Cryptography.Interfaces;
+using EscNet.Hashers.Interfaces.Algorithms;
 
 namespace Manager.Services.Services
 {
@@ -13,13 +13,14 @@ namespace Manager.Services.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
-        private readonly IRijndaelCryptography _rijndaelCryptography;
+        private readonly IArgon2IdHasher _hasher;
 
-        public UserService(IUserRepository userRepository, IMapper mapper, IRijndaelCryptography rijndaelCryptography)
+
+        public UserService(IUserRepository userRepository, IMapper mapper, IArgon2IdHasher hasher)
         {
             this._userRepository = userRepository;
             this._mapper = mapper;
-            this._rijndaelCryptography = rijndaelCryptography;
+            this._hasher = hasher;
         }
 
         public async Task<UserDto> Create(UserDto userDto)
@@ -32,7 +33,7 @@ namespace Manager.Services.Services
             var user = _mapper.Map<User>(userDto);
             user.Validate();
 
-            user.UpdatePassword(_rijndaelCryptography.Encrypt(user.Password));
+            user.UpdatePassword(_hasher.Hash(user.Password));
 
             var userCreated = await _userRepository.Create(user);
 
@@ -92,7 +93,7 @@ namespace Manager.Services.Services
             var user = _mapper.Map<User>(userDto);
             user.Validate();
 
-            user.UpdatePassword(_rijndaelCryptography.Encrypt(user.Password));
+            user.UpdatePassword(_hasher.Hash(user.Password));
 
             var userUpdated = await _userRepository.Update(user);
 

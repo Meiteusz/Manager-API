@@ -1,10 +1,11 @@
 ﻿using Manager.Core.Exceptions;
+using Manager.Domain.Interfaces;
 using Manager.Domain.Validators;
 using System.ComponentModel.DataAnnotations;
 
 namespace Manager.Domain.Entities
 {
-    public class User : Base
+    public class User : Base, IAggregateRoot
     {
         [Required]
         [StringLength(80)]
@@ -15,7 +16,7 @@ namespace Manager.Domain.Entities
         public string Email { get; private set; }
 
         [Required]
-        [StringLength(50)]
+        [StringLength(100)]
         public string Password { get; private set; }
 
         public User(string name, string email, string password)
@@ -32,18 +33,7 @@ namespace Manager.Domain.Entities
         public void UpdatePassword(string newPassword)
             => Password = newPassword;
 
-        public override void Validate()
-        {
-            var validator = new UserValidator();
-            var validation = validator.Validate(this);
-
-            if (!validation.IsValid)
-            {
-                foreach (var error in validation.Errors)
-                    _errors.Add(error.ErrorMessage);
-
-                throw new DomainException("Alguns campos estão inválidos, por favor corrija-os!", _errors);
-            }
-        }
+        public void Validate()
+            => base.Validate<UserValidator, User>(new UserValidator(), this);
     }
 }
